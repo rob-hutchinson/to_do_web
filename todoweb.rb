@@ -8,7 +8,8 @@ class Todoweb < Sinatra::Base
   # set :port, '3000'
 
   def current_user
-    u = User.first
+    username = request.env["HTTP_AUTHORIZATION"]
+    User.find_or_create_by! name: username
   end
 
 
@@ -18,8 +19,6 @@ class Todoweb < Sinatra::Base
     if params["due_date"]
       b.due! params["due_date"]
     end
-  # Item.create! item: params["item"], list_id: a.id
-  # Item.speak
   end
 
 
@@ -33,6 +32,9 @@ class Todoweb < Sinatra::Base
     if params["done"]
       a.finished!
     end
+  end
+
+  get "/lists/:list" do
   end
 
 end
