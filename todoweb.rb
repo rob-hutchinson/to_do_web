@@ -12,7 +12,6 @@ class Todoweb < Sinatra::Base
     User.find_or_create_by! name: username
   end
 
-
   post "/lists/:list_name" do
     a = current_user.lists.find_or_create_by! list_name: params[:list_name]
     b = a.add params["item"], a.id, current_user.id
@@ -24,13 +23,17 @@ class Todoweb < Sinatra::Base
 
   patch "/items/:id" do
     a = Item.find(params[:id])
+    # if current_user.id == a.user_id
+    if current_user.authorize! a  
+      if params["due_date"]
+        a.due! params["due_date"]
+      end
     
-    if params["due_date"]
-      a.due! params["due_date"]
-    end
-    
-    if params["done"]
-      a.finished!
+      if params["done"]
+        a.finished!
+      end
+    else
+      "Invalid Authorization!"
     end
   end
 
