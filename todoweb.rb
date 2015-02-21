@@ -15,7 +15,7 @@ class Todoweb < Sinatra::Base
 
   post "/lists/:list_name" do
     a = current_user.lists.find_or_create_by! list_name: params[:list_name]
-    b = a.add params["item"], a.id
+    b = a.add params["item"], a.id, current_user.id
     if params["due_date"]
       b.due! params["due_date"]
     end

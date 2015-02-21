@@ -1,6 +1,7 @@
 class Item < ActiveRecord::Base
   
   belongs_to :list
+  belongs_to :user
   
   def finished!
     update i_done: true
