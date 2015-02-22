@@ -73,6 +73,16 @@ class Todoweb < Sinatra::Base
   get "/items" do
     current_user.items.where(i_done: false).to_json
   end
+
+# Returns a random incompleted task
+  get "/next" do
+    a = current_user.items.where.not(i_due_date: nil, i_done: true).order("RANDOM()").first
+    unless a == nil
+      a.to_json
+    else
+      current_user.items.where(i_done: false).order("RANDOM()").first.to_json
+    end
+  end
 end
 
 Todoweb.run!
