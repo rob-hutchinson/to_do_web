@@ -3,7 +3,6 @@ class User < ActiveRecord::Base
   has_many :items
 
   def authorize! thing
-    binding.pry
     if thing.id == self.id
       true
     end
