@@ -8,8 +8,8 @@ class Todoweb < Sinatra::Base
   # set :port, '3000'
 
   def current_user
-    username = request.env["HTTP_AUTHORIZATION"]
-    User.find_or_create_by! name: username.downcase.capitalize
+    #username = request.env["HTTP_AUTHORIZATION"]
+    User.find_or_create_by! name: params["user"].downcase.capitalize
   end
 
 # Adds item to indicated :list_name (creating the list if necessary).
@@ -29,7 +29,7 @@ class Todoweb < Sinatra::Base
   end
 
 # Authenticated user may adjust a given item's due date or mark it done
-  patch "/items/:id" do
+  post "/items/:id" do
     item = Item.find(params[:id])
     if current_user.id == item.user_id  
       if params["due_date"]
