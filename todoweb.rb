@@ -31,13 +31,15 @@ class Todoweb < Sinatra::Base
 # Authenticated user may adjust a given item's due date or mark it done
   patch "/items/:id" do
     item = Item.find(params[:id])
-    if current_user.authorize! item  
+    if current_user.id == item.user_id  
       if params["due_date"]
         item.due! params["due_date"]
+        "OK"
       end
     
       if params["done"]
         item.finished!
+        "OK"
       end
     else
       "Invalid Authorization!"
@@ -60,11 +62,11 @@ class Todoweb < Sinatra::Base
   end
 
 # Returns the names of each list that is linked with authenticated user
-  get "/lists" do
+  get "/lists/" do
     list = current_user.lists
     list_names = []
     list.find_each do |x|
-      list_names << x.list_name.to_json
+      list_names << x.list_name.to_json + " "
     end
     list_names
   end
