@@ -9,7 +9,8 @@ class Todoweb < Sinatra::Base
 
   def current_user
     #username = request.env["HTTP_AUTHORIZATION"]
-    User.find_or_create_by! name: params["user"].downcase.capitalize
+    #User.find_or_create_by! name: params["user"].downcase.capitalize
+    User.first
   end
 
 # Adds item to indicated :list_name (creating the list if necessary).
@@ -46,18 +47,16 @@ class Todoweb < Sinatra::Base
     end
   end
 
-# Returns all items for authenticated user
-  get "/lists/all" do
-    current_user.items.to_json
-  end
-
 # Returns all items on an authenticated user's given :list
+##########################################################
   get "/lists/:list" do
-    list = current_user.lists.find_by(list_name: params[:list].downcase.capitalize)
-    if list == nil
+    @current_user = current_user
+    @list = current_user.lists.find_by(list_name: params[:list].downcase.capitalize)
+    if @list == nil
       "No such list found"
     else
-      list.items.to_json
+      @items = @list.items
+      erb :listitems
     end
   end
 
@@ -71,9 +70,20 @@ class Todoweb < Sinatra::Base
     list_names
   end
 
+# Returns all items for authenticated user
+##########################################  
+  get "/items/:user/all" do
+    @current_user = current_user
+    @items = current_user.items
+    erb :allitems
+  end
+
 # Returns all incomplete items for a particular user
-  get "/items" do
-    current_user.items.where(i_done: false).to_json
+###################################################  
+  get "/items/:user" do
+    @current_user = current_user
+    @items = current_user.items.where(i_done: false)
+    erb :items
   end
 
 # Returns a random incompleted task

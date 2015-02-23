@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h3>Unfinished Items List</h3>
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Item</th>
+            <th>List</th>
+            <th>Owner</th>
+            <th>Due Date</th>
+            <th>Done?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @items.each do |item| %>
+            <tr>
+              <td><%= item["id"] %></td>
+              <td><%= item["item"] %></td>
+              <td><a href= "/lists/<%= item.list.list_name %>"><%= item.list.list_name %></a></td>
+              <td><%= item.user.name %></td>
+              <td><%= item["i_due_date"] %></td>
+              <td><%= item["i_done"] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <div class="well">
+        <form action="/items/<%= @current_user.name.downcase%>/all" method="GET">
+          <button class="btn btn-primary">ALL ITEMS</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
