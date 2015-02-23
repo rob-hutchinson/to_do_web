@@ -18,7 +18,7 @@ class Todoweb < Sinatra::Base
 # Optionally pass a param of "due_date" to set the item's due_date when it is created
   post "/lists/:list_name" do
     unless params[:list_name] == "all"
-      a = current_user.lists.find_or_create_by! list_name: params[:list_name]
+      a = current_user.lists.find_or_create_by! list_name: params[:list_name].downcase.capitalize
       b = a.add params["item"], a.id, current_user.id
       if params["due_date"]
         b.due! params["due_date"]
@@ -51,7 +51,7 @@ class Todoweb < Sinatra::Base
 
 # Returns all items on an authenticated user's given :list
   get "/lists/:list" do
-    list = current_user.lists.find_by(list_name: params[:list])
+    list = current_user.lists.find_by(list_name: params[:list].downcase.capitalize)
     if list == nil
       "No such list found"
     else
@@ -81,6 +81,17 @@ class Todoweb < Sinatra::Base
       a.to_json
     else
       current_user.items.where(i_done: false).order("RANDOM()").first.to_json
+    end
+  end
+
+# Searches for an item matching a given string
+  get "/search" do
+    string = params['search']
+    items = current_user.items.where("item like '%#{string}%'")
+    if items == []
+      "No such item"
+    else
+      items.to_json
     end
   end
 end
